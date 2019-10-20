@@ -37,7 +37,7 @@
 					<Add library="libwxzlibd.a" />
 					<Add library="libwxregexud.a" />
 					<Add library="libwxexpatd.a" />
-					<Add library="libcurl.dll.a" />
+					<Add library="$(#curl)/lib/libcurl.dll.a" />
 					<Add directory="$(#wx)/gcc_dll_debug_x64" />
 					<Add directory="$(#curl)/bin" />
 				</Linker>
@@ -74,7 +74,7 @@
 					<Add library="libwxzlib.a" />
 					<Add library="libwxregexu.a" />
 					<Add library="libwxexpat.a" />
-					<Add library="libcurl.dll.a" />
+					<Add library="$(#curl)/lib/libcurl.dll.a" />
 					<Add directory="$(#wx)/gcc_dll_release_x64" />
 					<Add directory="$(#curl)/bin" />
 				</Linker>

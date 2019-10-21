@@ -28,19 +28,19 @@ PagerSpider::~PagerSpider()
 
 void PagerSpider::Init()
 {
-    SetRegexRule("<a href=\"(.*)\" target=\"_blank\">",RULE_LIST_DATA,0); //首页规则
-  //  SetRegexRule("",RULE_PAGER,1);
-  //  SetRegexRule("",RULE_LIST_DATA,1); //第二次分页
+    SetRegexRule("<a href=\"([^\"]+)\"[^>]+><img[^<]+</a>",RULE_LIST_DATA,0); //首页规则
+    SetRegexRule("<a href=\"([^\"]+)\">\d+<\/a> <a class=\"a1\" href=\"[^\"]+\">下一页",RULE_PAGER,1);
+    SetRegexRule("<img src=\"([^\"]+)\" alt=\"[^\"]+\" class=\"content_img\">",RULE_LIST_DATA,1); //第二次分页
 }
 
 bool PagerSpider::Run()
 {
-    //bfs
     std::vector<wxString> links;
     std::vector<wxString> next_links;
-    std::vector<wxString> pages;
     long nPages;
     links.push_back(_url);
+    wxString host = GetHost(_url);
+    //bfs
     for(uint8_t i=0;i<=_depth;i++){
         for(size_t nLinks=0; nLinks <links.size(); nLinks++){
             wxString response;
@@ -52,10 +52,12 @@ bool PagerSpider::Run()
                 std::vector<wxString> tmp_links = GetMatches(response,rule);
                 next_links.insert(next_links.end(),tmp_links.begin(),tmp_links.end());
             }else{ // 列表数据，内容多，有分页
-                pages = GetMatches(response,rule);
-                nPages = pages[pages.size()-1].ToLong(&nPages);
+                std::vector<wxString> pageMaxUrl = GetMatches(response,rule); //只匹配了最大分页，其余分页由程序生成
+                std::vector<wxString> pages;
+                size_t nPages;
+                GetAllPages(pageMaxUrl[0],host,nPages);
                 wxString rule = GetRegexRule(RULE_LIST_DATA,i);
-                for(long i=0; i<nPages; i++){
+                for(size_t i=0; i<nPages; i++){
                     Https(pages[i],response,wxFONTENCODING_UTF8);
                     std::vector<wxString> tmp_links = GetMatches(response,rule);
                     next_links.insert(next_links.end(),tmp_links.begin(),tmp_links.end());
@@ -65,14 +67,32 @@ bool PagerSpider::Run()
         links.clear();
         links.insert(links.end(),next_links.begin(),next_links.end());
         next_links.clear();
-//        std::cout<<"***********  "<<_depth<<"  ***********"<<std::endl;
-//        for(size_t i=0; i<links.size(); i++){
-//            std::cout<<links[i]<<std::endl;
-//        }
-//        std::cout<<"***********  end  ***********"<<std::endl;
     }
     //下面是图片的链接
     return true;
+}
+
+std::vector<wxString> PagerSpider::GetAllPages(wxString maxPageUrl,wxString host,size_t& nPages)
+{
+    wxString rule = "[^_]+_(\d+).html";
+    wxString pages = GetMatch(maxPageUrl,rule);
+    long xPages;
+    pages.ToLong(&xPages);
+    nPages = (size_t)xPages; //最大的页数
+    rule = "([^_]+)_\d+.html";
+    wxString prefix = GetMatch(maxPageUrl,rule);
+    std::vector<wxString> all_pages;
+    all_pages.push_back(host+prefix+".html");
+    for(size_t i= 2; i<=nPages; ++i){
+        all_pages.push_back(host+prefix+"_"+wxString::Format("%d",i)+".html");
+    }
+    return all_pages;
+}
+
+wxString PagerSpider::GetMatch(wxString& response,wxString& rule)
+{
+   std::vector<wxString> matches = GetMatches(response,rule);
+   return matches[0];
 }
 
 std::vector<wxString> PagerSpider::GetMatches(wxString& response,wxString& rule)

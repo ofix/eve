@@ -9,7 +9,14 @@ struct MemoryStruct {
   size_t size;
 };
 
-
+wxString GetHost(wxString url){
+    for(size_t i=9; i<url.Length(); i++){
+        if(i=='/'){
+            return url.Mid(0,i);
+        }
+    }
+    return "";
+}
 
 size_t curl_easy_write_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
 {

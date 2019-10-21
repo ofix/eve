@@ -17,6 +17,8 @@
 
 #include "GUIDialog.h"
 
+#include "include/PagerSpider.h"
+
 ///////////////////////////////////////////////////////////////////////////
 BEGIN_EVENT_TABLE( GUIDialog, wxDialog )
     EVT_CLOSE( GUIDialog::_wxFB_OnClose )
@@ -54,5 +56,7 @@ GUIDialog::GUIDialog( wxWindow* parent, int id, wxString title, wxPoint pos, wxS
     this->Layout();
     bSizer1->Fit( this );
 
-
+    //测试
+    PagerSpider spider("https://www.meitulu.com/search/%E7%8E%8B%E8%8E%B9",0,"",false);
+    spider.Run();
 }

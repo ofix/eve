@@ -21,6 +21,7 @@ class PagerSpider
         PagerSpider(wxString url, uint8_t depth, wxString destDir, bool bCache=true);
         virtual ~PagerSpider();
         bool Run();
+        void Init();
         void SetRegexRule(wxString regexString,uint8_t type,uint8_t depth);
         wxString GetRegexRule(uint8_t type,uint8_t depth);
         std::vector<wxString> GetMatches(wxString& response,wxString& rule);
@@ -46,7 +47,8 @@ class PagerSpider
         wxString ParseItem(wxString itemLine);
         wxString ParseMetaLine(wxString line,wxString prefix);
         std::vector<wxString> Split(wxString line,wxString seperator=",");
-        wxString GetExeDir();
+        //deubg
+        void console(wxString data,bool bUtf8 = true);
     private:
         wxString _url; //访问的URL
         uint8_t _depth; //列表层级的深度

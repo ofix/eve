@@ -1,6 +1,7 @@
 #include "Https.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
 
 
 struct MemoryStruct {
@@ -42,7 +43,7 @@ CURLcode Https(wxString strUrl,wxString& strResponse,wxFontEncoding enumCharSet)
         return CURLE_FAILED_INIT;
     }
     //证书路径
-    wxString strCertPath = "cacert.pem";
+    wxString strCertPath = GetExeDir()+"cacert.pem";
     struct MemoryStruct chunk;
     chunk.memory = (char*)malloc(1);  /* will be grown as needed by the realloc above */
     chunk.size = 0;    /* no data at this point */
@@ -71,8 +72,21 @@ CURLcode Https(wxString strUrl,wxString& strResponse,wxFontEncoding enumCharSet)
         if(enumCharSet == wxFONTENCODING_UTF8){
             strResponse = wxString::FromUTF8(chunk.memory,chunk.size);
         }
+    }else{
+        std::cout<<"###################################################"<<std::endl;
+        std::cout<<"curl_easy_perform() failed: \n"<<curl_easy_strerror(ret)<<std::endl;
+        std::cout<<"###################################################"<<std::endl;
     }
     curl_slist_free_all(list); /* free the list again */
     curl_easy_cleanup(curl);
     return ret;
+}
+
+wxString GetExeDir()
+{
+    wxString strExePath ;
+    wxStandardPathsBase& stdp = wxStandardPaths::Get();
+    wxFileName exeFile(stdp.GetExecutablePath());
+    strExePath = exeFile.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    return strExePath;
 }

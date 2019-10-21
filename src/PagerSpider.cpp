@@ -1,11 +1,10 @@
 #include "../include/PagerSpider.h"
 #include <exception>
-#include <wx/stdpaths.h>
-#include <wx/filename.h>
 #include <wx/regex.h>
 #include <wx/textfile.h>
-#include <wx/filefn.h>
+#include <wx/log.h>
 #include "../lib/Https.h"
+#include <iostream>
 
 PagerSpider::PagerSpider(wxString url,
                          uint8_t depth,
@@ -19,11 +18,19 @@ PagerSpider::PagerSpider(wxString url,
 {
     _cacheDir = GetExeDir()+"cache/";
     _accessDir = GetExeDir();
+    Init();
 }
 
 PagerSpider::~PagerSpider()
 {
     //dtor
+}
+
+void PagerSpider::Init()
+{
+    SetRegexRule("<a href=\"(.*)\" target=\"_blank\">",RULE_LIST_DATA,0); //首页规则
+  //  SetRegexRule("",RULE_PAGER,1);
+  //  SetRegexRule("",RULE_LIST_DATA,1); //第二次分页
 }
 
 bool PagerSpider::Run()
@@ -33,12 +40,13 @@ bool PagerSpider::Run()
     std::vector<wxString> next_links;
     std::vector<wxString> pages;
     long nPages;
-    for(uint8_t i=0;i<_depth-1;i++){
+    links.push_back(_url);
+    for(uint8_t i=0;i<=_depth;i++){
         for(size_t nLinks=0; nLinks <links.size(); nLinks++){
             wxString response;
-            Https(_url,response,wxFONTENCODING_UTF8);
+            Https(links[i],response,wxFONTENCODING_UTF8);
+            wxString rule = GetRegexRule(RULE_PAGER,i);//检查是否有分页
             //访问links所有的网页，用对应的规则匹配出下一层级的所有链接
-            wxString rule = GetRegexRule(RULE_PAGER,i);
             if(rule == ""){ // 列表数据，内容少，没有分页
                 wxString rule = GetRegexRule(RULE_LIST_DATA,i);
                 std::vector<wxString> tmp_links = GetMatches(response,rule);
@@ -46,8 +54,9 @@ bool PagerSpider::Run()
             }else{ // 列表数据，内容多，有分页
                 pages = GetMatches(response,rule);
                 nPages = pages[pages.size()-1].ToLong(&nPages);
+                wxString rule = GetRegexRule(RULE_LIST_DATA,i);
                 for(long i=0; i<nPages; i++){
-                    wxString rule = GetRegexRule(RULE_LIST_DATA,i);
+                    Https(pages[i],response,wxFONTENCODING_UTF8);
                     std::vector<wxString> tmp_links = GetMatches(response,rule);
                     next_links.insert(next_links.end(),tmp_links.begin(),tmp_links.end());
                 }
@@ -56,7 +65,13 @@ bool PagerSpider::Run()
         links.clear();
         links.insert(links.end(),next_links.begin(),next_links.end());
         next_links.clear();
+//        std::cout<<"***********  "<<_depth<<"  ***********"<<std::endl;
+//        for(size_t i=0; i<links.size(); i++){
+//            std::cout<<links[i]<<std::endl;
+//        }
+//        std::cout<<"***********  end  ***********"<<std::endl;
     }
+    //下面是图片的链接
     return true;
 }
 
@@ -65,13 +80,26 @@ std::vector<wxString> PagerSpider::GetMatches(wxString& response,wxString& rule)
     std::vector<wxString> matches;
     wxRegEx r(rule,wxRE_ADVANCED);
     wxString text = response;
+    console(text);
     while(r.Matches(text)){
         size_t start, len;
         r.GetMatch(&start, &len, 0);
         wxString match = r.GetMatch(text,1); //只有一个匹配
+        std::cout<<"############### match ###################"<<std::endl;
+        std::cout<<match<<std::endl;
+        std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"<<std::endl;
+        matches.push_back(match);
         text = text.Mid(start+len);
     }
     return matches;
+}
+
+
+void  PagerSpider::console(wxString data,bool bUtf8)
+{
+ wxCSConv gbkConv(wxFONTENCODING_CP936);
+ std::string str_gbk(gbkConv.cWX2MB(data.wchar_str()));
+ std::cout<<"length: "<<str_gbk.length()<<std::endl;
 }
 
 //正则存取函数
@@ -94,6 +122,9 @@ void PagerSpider::SetRegexRule(wxString regexString,uint8_t type,uint8_t depth)
     rule.type = type;
     rule.rule = regexString;
     _regexRules.push_back(rule);
+    if(depth > _depth){
+        _depth = depth;
+    }
 }
 
 bool PagerSpider::SaveCacheMeta()
@@ -277,15 +308,6 @@ void PagerSpider::SetLogDir(wxString accessDir)
 wxString PagerSpider::GetLogFile()
 {
     return _accessDir +"access."+ACCESS_SUFFIX;
-}
-
-wxString PagerSpider::GetExeDir()
-{
-    wxString strExePath ;
-    wxStandardPathsBase& stdp = wxStandardPaths::Get();
-    wxFileName exeFile(stdp.GetExecutablePath());
-    strExePath = exeFile.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    return strExePath;
 }
 
 std::vector<wxString> PagerSpider::GetCache(uint8_t depth) //获取缓存文件中保存的列表目录中的数据

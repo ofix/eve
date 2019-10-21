@@ -3,7 +3,9 @@
 #include <wx/string.h>
 #include <vector>
 
-#define CACHE_SUFFIX ".eve"
+#define CACHE_SUFFIX "eve"
+#define ACCESS_SUFFIX "log"
+
 #define REGEX_URL_LIST 1
 #define REGEX_URL_PAGER 2
 #define REGEX_URL_IMAGE 3
@@ -16,24 +18,39 @@ class PagerSpider
         PagerSpider(wxString url, uint8_t depth, wxString destDir, bool bCache=false);
         virtual ~PagerSpider();
         bool Run();
-        bool IsCacheExists();
         void SetRegexRules(wxString regexString,uint8_t type,uint8_t depth);
-        std::vector<wxString> GetCache(uint8_t depth); //»ñÈ¡»º´æÎÄ¼şÖĞ±£´æµÄÁĞ±íÄ¿Â¼ÖĞµÄÊı¾İ
-        bool SaveCache(std::vector<wxString> data, uint8_t depth); //¶¼ÊÇÁ´½Ó
-        uint32_t GetTotalImageCount(); //»ñÈ¡ËùÓĞÍ¼Æ¬×ÜÊı
-        bool SaveAccessLog(wxString url); //ÅÀ³æ·ÃÎÊµÄÈÕÖ¾
+        uint32_t GetTotalImageCount(); //è·å–æ‰€æœ‰å›¾ç‰‡æ€»æ•°
+
+        //æ—¥å¿—ç›¸å…³å‡½æ•°
+        bool SaveLog(wxString url); //çˆ¬è™«è®¿é—®çš„æ—¥å¿—
+        wxString GetLogFile();
+        void SetLogDir(wxString logDir);
+        wxString GetLogDir();
+        //ç¼“å­˜ç›¸å…³æ—¥å¿—
+        bool IsCacheExists();
+        std::vector<wxString> GetCache(uint8_t depth); //è·å–ç¼“å­˜æ–‡ä»¶ä¸­ä¿å­˜çš„åˆ—è¡¨ç›®å½•ä¸­çš„æ•°æ®
+        bool SaveCache(std::vector<wxString> data, uint8_t depth); //éƒ½æ˜¯é“¾æ¥
+        bool ClearCache();//æ¸…ç©ºç¼“å­˜
+        wxString GetCacheFile();
+        wxString GetCacheDir();
+        void SetCacheDir(wxString cacheDir); //è®¾ç½®ç¼“å­˜ç›®å½•
+        wxString GetCacheDir();
+        //
+        wxString GetExeDir();
     private:
-        wxString _url; //·ÃÎÊµÄURL
-        uint8_t _depth; //ÁĞ±í²ã¼¶µÄÉî¶È
-        wxString _destDir; //±£´æÍ¼Æ¬µÄÄ¿Â¼
-        wxString _cacheDir; //»º´æÎÄ¼şµÄÄ¿Â¼
-        wxString _accessDir; //ÅÀ³æ·ÃÎÊÈÕÖ¾
-        bool _bCache; //ÊÇ·ñ»º´æÊı¾İ
-        std::vector<wxString> _regexRules; //ÕıÔò±í´ïÊ½
-        std::vector<wxString> _failUrl; //·ÃÎÊÊ§°ÜµÄURL
-        //ÏÂÃæÊÇÍ³¼ÆÊı¾İ
-        uint32_t _totalImageCount; //ÏÂÔØµÄËùÓĞÍ¼Æ¬×ÜÊı
-        bool _allowRepeat; //ÊÇ·ñĞèÒªÍ¼Æ¬È¥ÖØ
+        wxString _url; //è®¿é—®çš„URL
+        uint8_t _depth; //åˆ—è¡¨å±‚çº§çš„æ·±åº¦
+        wxString _destDir; //ä¿å­˜å›¾ç‰‡çš„ç›®å½•
+        wxString _cacheDir; //ç¼“å­˜æ–‡ä»¶çš„ç›®å½•
+        wxString _accessDir; //çˆ¬è™«è®¿é—®æ—¥å¿—
+        bool _bCache; //æ˜¯å¦ç¼“å­˜æ•°æ®
+        std::vector<wxString> _regexRules; //æ­£åˆ™è¡¨è¾¾å¼
+        std::vector<wxString> _failUrl; //è®¿é—®å¤±è´¥çš„URL
+        //ä¸‹é¢æ˜¯ç»Ÿè®¡æ•°æ®
+        uint32_t _totalImageCount; //ä¸‹è½½çš„æ‰€æœ‰å›¾ç‰‡æ€»æ•°
+        bool _allowRepeat; //æ˜¯å¦éœ€è¦å›¾ç‰‡å»é‡
+        // ç»Ÿè®¡ç›¸å…³å˜é‡
+        uint32_t _elapsed; //æ¶ˆé€çš„æ—¶é—´ï¼Œå•ä½ç§’
 };
 
 #endif // PAGERSPIDER_H

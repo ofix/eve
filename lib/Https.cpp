@@ -41,31 +41,31 @@ CURLcode Https(wxString strUrl,wxString& strResponse,wxFontEncoding enumCharSet)
     if(NULL == curl){
         return CURLE_FAILED_INIT;
     }
-    //Ö¤ÊéÂ·¾¶
+    //è¯ä¹¦è·¯å¾„
     wxString strCertPath = "cacert.pem";
     struct MemoryStruct chunk;
     chunk.memory = (char*)malloc(1);  /* will be grown as needed by the realloc above */
     chunk.size = 0;    /* no data at this point */
-    // ÉèÖÃÇëÇóÑ¡Ïî
+    // è®¾ç½®è¯·æ±‚é€‰é¡¹
     curl_easy_setopt(curl,CURLOPT_URL,strUrl.c_str().AsChar());
     bool bHttps = false;
     if(strUrl.Find("https://") !=  wxNOT_FOUND){
         bHttps = true;
     }
-    // ÉèÖÃ×Ô¶¨ÒåÇëÇóÍ·
+    // è®¾ç½®è‡ªå®šä¹‰è¯·æ±‚å¤´
     struct curl_slist *list = NULL;
     list = curl_slist_append(list, "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36");
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
-    //ÉèÖÃÆäËûÇëÇóÑ¡Ïî
+    //è®¾ç½®å…¶ä»–è¯·æ±‚é€‰é¡¹
     if(bHttps){
-        curl_easy_setopt(curl,CURLOPT_SSL_VERIFYPEER, 1L);//openssl±àÒëÊ±Ê¹ÓÃcurl¹ÙÍø»òÕßfirefoxµ¼³öµÄµÚÈı·½¸ùÖ¤ÊéÎÄ¼ş
+        curl_easy_setopt(curl,CURLOPT_SSL_VERIFYPEER, 1L);//opensslç¼–è¯‘æ—¶ä½¿ç”¨curlå®˜ç½‘æˆ–è€…firefoxå¯¼å‡ºçš„ç¬¬ä¸‰æ–¹æ ¹è¯ä¹¦æ–‡ä»¶
         curl_easy_setopt(curl,CURLOPT_SSL_VERIFYHOST, 2L);
         curl_easy_setopt(curl,CURLOPT_CAINFO, strCertPath.c_str().AsChar());
     }
-    // ÉèÖÃ»Øµ÷º¯Êı
+    // è®¾ç½®å›è°ƒå‡½æ•°
     curl_easy_setopt(curl,CURLOPT_WRITEFUNCTION,curl_easy_write_callback);
     curl_easy_setopt(curl,CURLOPT_WRITEDATA,(void *)&chunk);
-    // ¿ªÊ¼ÇëÇó
+    // å¼€å§‹è¯·æ±‚
     CURLcode ret = curl_easy_perform(curl);
     if(ret == CURLE_OK){
         if(enumCharSet == wxFONTENCODING_UTF8){

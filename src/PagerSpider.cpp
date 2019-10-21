@@ -1,5 +1,7 @@
 #include "../include/PagerSpider.h"
 #include <wx/regex.h>
+#include <wx/textfile.h>
+#include <wx/filefn.h>
 
 PagerSpider::PagerSpider(wxString url,
                          uint8_t depth,
@@ -11,7 +13,9 @@ PagerSpider::PagerSpider(wxString url,
                              _bCache(bCache)
 
 {
-    //ctor
+    _cacheDir = GetExeDir()+"cache/";
+    _accessDir = GetExeDir();
+
 }
 
 PagerSpider::~PagerSpider()
@@ -24,33 +28,99 @@ bool PagerSpider::Run()
     return false;
 }
 
+bool PagerSpider::SaveCache(std::vector<wxString> data, uint8_t depth) //éƒ½æ˜¯é“¾æ¥
+{
+    wxTextFile file(GetCacheFile());
+    if(!file.Exists()){
+        file.Create(GetCacheFile());
+    }
+    if(data.size() == 0){
+        return false;
+    }
+    if(depth<0 || depth > 3){
+        return false;
+    }
+    std::vector<wxString>::const_iterator it;
+    for(it=data.begin(); it!=data.end(); ++it){
+        wxString strDepth = wxString::Format("%d",depth);
+        file.AddLine(strDepth+","+(*it));
+    }
+    file.Write();
+    file.Close();
+    return true;
+}
+
 bool PagerSpider::IsCacheExists()
 {
-    return false;
+    return wxFileExists(GetCacheFile());
 }
+
+
+wxString PagerSpider::GetCacheFile()
+{
+    return GetCacheDir()+"cache."+CACHE_SUFFIX;
+}
+
+wxString PagerSpider::GetCacheDir()
+{
+    return _cacheDir;
+}
+
+void PagerSpider::SetCacheDir(wxString cacheDir)
+{
+    _cacheDir = cacheDir;
+}
+
+bool PagerSpider::ClearCache()
+{
+   wxRemoveFile(GetCacheFile());
+   return true;
+}
+
+//æ—¥å¿—æ“ä½œ
+wxString PagerSpider::GetLogDir()
+{
+    return _accessDir;
+}
+
+void PagerSpider::SetLogDir(wxString accessDir)
+{
+    _accessDir = accessDir;
+}
+
+wxString PagerSpider::GetLogFile()
+{
+    return _accessDir +"access."+ACCESS_SUFFIX;
+}
+
+wxString PagerSpider::GetExeDir()
+{
+    wxString strExePath ;
+    wxStandardPathsBase& stdp = wxStandardPaths::Get();
+    wxFileName exeFile(stdp.GetExecutablePath());
+    strExePath = exeFile.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    return strExePath;
+}
+
 
 void PagerSpider::SetRegexRules(wxString regexString,uint8_t type,uint8_t depth)
 {
     _regexRules.push_back(regexString);
 }
 
-std::vector<wxString> PagerSpider::GetCache(uint8_t depth) //»ñÈ¡»º´æÎÄ¼şÖĞ±£´æµÄÁĞ±íÄ¿Â¼ÖĞµÄÊı¾İ
+std::vector<wxString> PagerSpider::GetCache(uint8_t depth) //è·å–ç¼“å­˜æ–‡ä»¶ä¸­ä¿å­˜çš„åˆ—è¡¨ç›®å½•ä¸­çš„æ•°æ®
 {
     std::vector<wxString> data;
     return data;
 }
 
-bool PagerSpider::SaveCache(std::vector<wxString> data, uint8_t depth) //¶¼ÊÇÁ´½Ó
-{
-    return false;
-}
 
-uint32_t PagerSpider::GetTotalImageCount() //»ñÈ¡ËùÓĞÍ¼Æ¬×ÜÊı
+uint32_t PagerSpider::GetTotalImageCount() //è·å–æ‰€æœ‰å›¾ç‰‡æ€»æ•°
 {
     return _totalImageCount;
 }
 
-bool PagerSpider::SaveAccessLog(wxString url) //ÅÀ³æ·ÃÎÊµÄÈÕÖ¾
+bool PagerSpider::SaveAccessLog(wxString url) //çˆ¬è™«è®¿é—®çš„æ—¥å¿—
 {
     return false;
 }

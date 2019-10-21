@@ -11,7 +11,7 @@ struct MemoryStruct {
 
 wxString GetHost(wxString url){
     for(size_t i=9; i<url.Length(); i++){
-        if(i=='/'){
+        if(url[i]=='/'){
             return url.Mid(0,i);
         }
     }

@@ -18,6 +18,7 @@ PagerSpider::PagerSpider(wxString url,
 {
     _cacheDir = GetExeDir()+"cache/";
     _accessDir = GetExeDir();
+    _totalImageCount = 0;
     if(_destDir == ""){
         _destDir = GetExeDir()+"images/";
     }
@@ -31,9 +32,9 @@ PagerSpider::~PagerSpider()
 
 void PagerSpider::Init()
 {
-    SetRegexRule("<a href=\"([^\"]+)\"[^>]+><img[^<]+</a>",RULE_LIST_DATA,0); //首页规则
-    SetRegexRule("<a href=\"([^\"]+)\">\\d+</a> <a class=\"a1\" href=\"[^\"]+\">下一页",RULE_PAGER,1);
-    SetRegexRule("<img src=\"([^\"]+)\" alt=\"[^\"]+\" class=\"content_img\">",RULE_LIST_DATA,1); //第二次分页
+    SetRegexRule(wxT("<a href=\"([^\"]+)\"[^>]+><img[^<]+</a>"),RULE_LIST_DATA,0); //首页规则
+    SetRegexRule(wxT("<a href=\"([^\"]+)\">\\d+</a> <a class=\"a1\" href=\"[^\"]+\">下一页"),RULE_PAGER,1);
+    SetRegexRule(wxT("<img src=\"([^\"]+)\" alt=\"[^\"]+\" class=\"content_img\">"),RULE_LIST_DATA,1); //第二次分页
     SetGirl(wxT("王莹"));//不加wxT，输出的图片文件名会乱码
 }
 
@@ -51,8 +52,8 @@ bool PagerSpider::Run()
     for(uint8_t i=0;i<=_depth;i++){
         for(size_t nLinks=0; nLinks <links.size(); nLinks++){
             wxString response;
-            Https(links[i],response,wxFONTENCODING_UTF8);
-            wxString rule = GetRegexRule(RULE_PAGER,i);//检查是否有分页
+            Https(links[nLinks],response,wxFONTENCODING_UTF8);
+            wxString rule = GetRegexRule(RULE_PAGER,(uint8_t)i);//检查是否有分页
             //访问links所有的网页，用对应的规则匹配出下一层级的所有链接
             if(rule == ""){ // 列表数据，内容少，没有分页
                 wxString rule = GetRegexRule(RULE_LIST_DATA,i);
@@ -62,10 +63,11 @@ bool PagerSpider::Run()
                 std::vector<wxString> pageMaxUrl = GetMatches(response,rule); //只匹配了最大分页，其余分页由程序生成
                 std::vector<wxString> pages;
                 size_t nPages;
-                GetAllPages(pageMaxUrl[0],host,nPages);
+                pages = GetAllPages(pageMaxUrl[0],host,nPages);
                 wxString rule = GetRegexRule(RULE_LIST_DATA,i);
-                for(size_t i=0; i<nPages; i++){
-                    Https(pages[i],response,wxFONTENCODING_UTF8);
+                for(size_t j=0; j<nPages; j++){
+                    //std::cout<<pages[j].char_str()<<std::endl;
+                    Https(pages[j],response,wxFONTENCODING_UTF8);
                     std::vector<wxString> tmp_links = GetMatches(response,rule);
                     next_links.insert(next_links.end(),tmp_links.begin(),tmp_links.end());
                 }
@@ -75,7 +77,8 @@ bool PagerSpider::Run()
         links.insert(links.end(),next_links.begin(),next_links.end());
         next_links.clear();
     }
-    std::cout<<"Download Images Start...."<<std::endl;
+    std::cout<<"image size "<<(int)links.size()<<std::endl;
+    _totalImageCount = links.size();
     DownloadAllImages(links);
     std::cout<<"Download Images End...."<<std::endl;
     //下面是图片的链接
@@ -111,7 +114,7 @@ std::vector<wxString> PagerSpider::GetAllPages(wxString maxPageUrl,wxString host
     std::vector<wxString> all_pages;
     all_pages.push_back(host+prefix+".html");
     for(size_t i= 2; i<=nPages; ++i){
-        all_pages.push_back(host+prefix+"_"+wxString::Format("%d",i)+".html");
+        all_pages.push_back(host+prefix+"_"+wxString::Format("%d",(int)i)+".html");
     }
     return all_pages;
 }
@@ -127,14 +130,10 @@ std::vector<wxString> PagerSpider::GetMatches(wxString& response,wxString& rule)
     std::vector<wxString> matches;
     wxRegEx r(rule,wxRE_ADVANCED);
     wxString text = response;
-    console(text);
     while(r.Matches(text)){
         size_t start, len;
         r.GetMatch(&start, &len, 0);
         wxString match = r.GetMatch(text,1); //只有一个匹配
-        std::cout<<"############### match ###################"<<std::endl;
-        std::cout<<match<<std::endl;
-        std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"<<std::endl;
         matches.push_back(match);
         text = text.Mid(start+len);
     }
@@ -146,7 +145,6 @@ void  PagerSpider::console(wxString data,bool bUtf8)
 {
  wxCSConv gbkConv(wxFONTENCODING_CP936);
  std::string str_gbk(gbkConv.cWX2MB(data.wchar_str()));
- std::cout<<"length: "<<str_gbk.length()<<std::endl;
 }
 
 //正则存取函数

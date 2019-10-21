@@ -70,7 +70,7 @@ class PagerSpider
 
         CacheItem _cache_meta; //当前缓存的meta数据
         //下面是统计数据
-        uint32_t _totalImageCount; //下载的所有图片总数
+        size_t _totalImageCount; //下载的所有图片总数
         bool _allowRepeat; //是否需要图片去重
         // 统计相关变量
         uint32_t _elapsed; //消逝的时间，单位秒

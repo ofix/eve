@@ -30,14 +30,32 @@ bool PagerSpider::Run()
 {
     //bfs
     std::vector<wxString> links;
+    std::vector<wxString> next_links;
     std::vector<wxString> pages;
-    wxString response;
-    Https(_url,response,wxFONTENCODING_UTF8);
+    long nPages;
     for(uint8_t i=0;i<_depth-1;i++){
-        wxString rule = GetRegexRule(RULE_LIST_DATA,i);
-        links = GetMatches(response,rule);
-        rule = GetRegexRule(RULE_PAGER,i);
-        pages = GetMatches(response,rule);
+        for(size_t nLinks=0; nLinks <links.size(); nLinks++){
+            wxString response;
+            Https(_url,response,wxFONTENCODING_UTF8);
+            //访问links所有的网页，用对应的规则匹配出下一层级的所有链接
+            wxString rule = GetRegexRule(RULE_PAGER,i);
+            if(rule == ""){ // 列表数据，内容少，没有分页
+                wxString rule = GetRegexRule(RULE_LIST_DATA,i);
+                std::vector<wxString> tmp_links = GetMatches(response,rule);
+                next_links.insert(next_links.end(),tmp_links.begin(),tmp_links.end());
+            }else{ // 列表数据，内容多，有分页
+                pages = GetMatches(response,rule);
+                nPages = pages[pages.size()-1].ToLong(&nPages);
+                for(long i=0; i<nPages; i++){
+                    wxString rule = GetRegexRule(RULE_LIST_DATA,i);
+                    std::vector<wxString> tmp_links = GetMatches(response,rule);
+                    next_links.insert(next_links.end(),tmp_links.begin(),tmp_links.end());
+                }
+            }
+        }
+        links.clear();
+        links.insert(links.end(),next_links.begin(),next_links.end());
+        next_links.clear();
     }
     return true;
 }
@@ -46,8 +64,12 @@ std::vector<wxString> PagerSpider::GetMatches(wxString& response,wxString& rule)
 {
     std::vector<wxString> matches;
     wxRegEx r(rule,wxRE_ADVANCED);
-    while(r.Matches(response)){
-
+    wxString text = response;
+    while(r.Matches(text)){
+        size_t start, len;
+        r.GetMatch(&start, &len, 0);
+        wxString match = r.GetMatch(text,1); //只有一个匹配
+        text = text.Mid(start+len);
     }
     return matches;
 }

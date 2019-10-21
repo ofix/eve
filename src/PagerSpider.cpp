@@ -18,6 +18,9 @@ PagerSpider::PagerSpider(wxString url,
 {
     _cacheDir = GetExeDir()+"cache/";
     _accessDir = GetExeDir();
+    if(_destDir == ""){
+        _destDir = GetExeDir()+"images/";
+    }
     Init();
 }
 
@@ -29,15 +32,19 @@ PagerSpider::~PagerSpider()
 void PagerSpider::Init()
 {
     SetRegexRule("<a href=\"([^\"]+)\"[^>]+><img[^<]+</a>",RULE_LIST_DATA,0); //首页规则
-    SetRegexRule("<a href=\"([^\"]+)\">\d+<\/a> <a class=\"a1\" href=\"[^\"]+\">下一页",RULE_PAGER,1);
+    SetRegexRule("<a href=\"([^\"]+)\">\\d+</a> <a class=\"a1\" href=\"[^\"]+\">下一页",RULE_PAGER,1);
     SetRegexRule("<img src=\"([^\"]+)\" alt=\"[^\"]+\" class=\"content_img\">",RULE_LIST_DATA,1); //第二次分页
+    SetGirl(wxT("王莹"));//不加wxT，输出的图片文件名会乱码
+}
+
+void PagerSpider::SetGirl(wxString girl){
+    _girl = girl;
 }
 
 bool PagerSpider::Run()
 {
     std::vector<wxString> links;
     std::vector<wxString> next_links;
-    long nPages;
     links.push_back(_url);
     wxString host = GetHost(_url);
     //bfs
@@ -68,18 +75,38 @@ bool PagerSpider::Run()
         links.insert(links.end(),next_links.begin(),next_links.end());
         next_links.clear();
     }
+    std::cout<<"Download Images Start...."<<std::endl;
+    DownloadAllImages(links);
+    std::cout<<"Download Images End...."<<std::endl;
     //下面是图片的链接
+    return true;
+}
+
+bool PagerSpider::DownloadSingleImage(wxString& image_url,wxString savePath)
+{
+   CURLcode ret = DownloadFile(image_url,savePath);
+   if(ret == CURLE_OK){
+        return true;
+   }
+   return false;
+}
+
+bool PagerSpider::DownloadAllImages(std::vector<wxString>& images_url)
+{
+    for(size_t i = 0; i< images_url.size(); ++i){
+        DownloadSingleImage(images_url[i], _destDir+_girl+"_"+wxString::Format("%04d",(int)i)+".jpg");
+    }
     return true;
 }
 
 std::vector<wxString> PagerSpider::GetAllPages(wxString maxPageUrl,wxString host,size_t& nPages)
 {
-    wxString rule = "[^_]+_(\d+).html";
+    wxString rule = "[^_]+_(\\d+).html";
     wxString pages = GetMatch(maxPageUrl,rule);
     long xPages;
     pages.ToLong(&xPages);
     nPages = (size_t)xPages; //最大的页数
-    rule = "([^_]+)_\d+.html";
+    rule = "([^_]+)_\\d+.html";
     wxString prefix = GetMatch(maxPageUrl,rule);
     std::vector<wxString> all_pages;
     all_pages.push_back(host+prefix+".html");

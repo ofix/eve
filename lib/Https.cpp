@@ -89,6 +89,55 @@ CURLcode Https(wxString strUrl,wxString& strResponse,wxFontEncoding enumCharSet)
     return ret;
 }
 
+size_t curl_easy_download_callback(void *ptr, size_t size, size_t nmemb, FILE *stream) {
+    size_t written = fwrite(ptr, size, nmemb, stream);
+    return written;
+}
+
+CURLcode DownloadFile(wxString strUrl,wxString& strSavePath)
+{
+    CURL* curl = curl_easy_init();
+    if(NULL == curl){
+        return CURLE_FAILED_INIT;
+    }
+    //初始化文件
+    FILE* fp;
+    wchar_t outfilename[FILENAME_MAX] = {0};
+    wcscpy_s(outfilename, (const wchar_t*)strSavePath.wc_str());
+    fp = _wfopen(outfilename,L"wb");
+    //证书路径
+    wxString strCertPath = GetExeDir()+"cacert.pem";
+    // 设置请求选项
+    curl_easy_setopt(curl,CURLOPT_URL,strUrl.c_str().AsChar());
+    bool bHttps = false;
+    if(strUrl.Find("https://") !=  wxNOT_FOUND){
+        bHttps = true;
+    }
+    // 设置自定义请求头
+    struct curl_slist *list = NULL;
+    list = curl_slist_append(list, "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36");
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
+    //设置其他请求选项
+    if(bHttps){
+        curl_easy_setopt(curl,CURLOPT_SSL_VERIFYPEER, 1L);//openssl编译时使用curl官网或者firefox导出的第三方根证书文件
+        curl_easy_setopt(curl,CURLOPT_SSL_VERIFYHOST, 2L);
+        curl_easy_setopt(curl,CURLOPT_CAINFO, strCertPath.c_str().AsChar());
+    }
+    // 设置回调函数
+    curl_easy_setopt(curl,CURLOPT_WRITEFUNCTION,curl_easy_download_callback);
+    curl_easy_setopt(curl,CURLOPT_WRITEDATA, fp);
+    // 开始请求
+    CURLcode ret = curl_easy_perform(curl);
+    if(ret != CURLE_OK){
+        std::cout<<"###################################################"<<std::endl;
+        std::cout<<"DownloadFile() failed: \n"<<curl_easy_strerror(ret)<<std::endl;
+        std::cout<<"###################################################"<<std::endl;
+    }
+    curl_slist_free_all(list); /* free the list again */
+    curl_easy_cleanup(curl);
+    return ret;
+}
+
 wxString GetExeDir()
 {
     wxString strExePath ;

@@ -22,12 +22,15 @@ class PagerSpider
         virtual ~PagerSpider();
         bool Run();
         void Init();
+        void SetGirl(wxString girl);
         void SetRegexRule(wxString regexString,uint8_t type,uint8_t depth);
         wxString GetRegexRule(uint8_t type,uint8_t depth);
         std::vector<wxString> GetMatches(wxString& response,wxString& rule);
         wxString GetMatch(wxString& response,wxString& rule);
         uint32_t GetTotalImageCount(); //获取所有图片总数
         std::vector<wxString> GetAllPages(wxString maxPageUrl,wxString host,size_t& nPages);
+        bool DownloadSingleImage(wxString& image_url,wxString savePath);
+        bool DownloadAllImages(std::vector<wxString>& images_url);
 
         //日志相关函数
         bool SaveLog(wxString url); //爬虫访问的日志

@@ -17,6 +17,7 @@
 					<Add directory="$(#wx)/lib/gcc_dll_debug_x64/mswu" />
 					<Add directory="$(#curl)/lib" />
 					<Add directory="$(#curl)/include" />
+					<Add directory="include" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="$(#wx)/lib/gcc_dll_debug_x64/mswu" />
@@ -53,6 +54,7 @@
 					<Add directory="$(#wx)/lib/gcc_dll_release_x64/mswu" />
 					<Add directory="$(#curl)/include" />
 					<Add directory="$(#curl)/lib" />
+					<Add directory="include" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="$(#wx)/lib/gcc_dll_release_x64/mswu" />
@@ -107,12 +109,14 @@
 		<Unit filename="eveApp.h" />
 		<Unit filename="eveMain.cpp" />
 		<Unit filename="eveMain.h" />
+		<Unit filename="include/CacheItem.h" />
 		<Unit filename="include/PagerSpider.h" />
 		<Unit filename="lib/Https.cpp" />
 		<Unit filename="lib/Https.h" />
 		<Unit filename="resource.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
+		<Unit filename="src/CacheItem.cpp" />
 		<Unit filename="src/PagerSpider.cpp" />
 		<Extensions>
 			<code_completion />

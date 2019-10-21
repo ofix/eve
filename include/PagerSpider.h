@@ -2,6 +2,7 @@
 #define PAGERSPIDER_H
 #include <wx/string.h>
 #include <vector>
+#include "CacheItem.h"
 
 #define CACHE_SUFFIX "eve"
 #define ACCESS_SUFFIX "log"
@@ -15,7 +16,7 @@
 class PagerSpider
 {
     public:
-        PagerSpider(wxString url, uint8_t depth, wxString destDir, bool bCache=false);
+        PagerSpider(wxString url, uint8_t depth, wxString destDir, bool bCache=true);
         virtual ~PagerSpider();
         bool Run();
         void SetRegexRules(wxString regexString,uint8_t type,uint8_t depth);
@@ -28,6 +29,7 @@ class PagerSpider
         wxString GetLogDir();
         //缓存相关日志
         bool IsCacheExists();
+        bool RestoreCache();//解析Cache里面的数据
         std::vector<wxString> GetCache(uint8_t depth); //获取缓存文件中保存的列表目录中的数据
         bool SaveCache(std::vector<wxString> data, uint8_t depth); //都是链接
         bool ClearCache();//清空缓存
@@ -35,7 +37,10 @@ class PagerSpider
         wxString GetCacheDir();
         void SetCacheDir(wxString cacheDir); //设置缓存目录
         wxString GetCacheDir();
-        //
+        //Cache 解析相关
+        wxString ParseItem(wxString itemLine);
+        wxString ParseMetaLine(wxString line,wxString prefix);
+        wxString Split(wxString line,wxString seperator=",");
         wxString GetExeDir();
     private:
         wxString _url; //访问的URL
@@ -45,7 +50,12 @@ class PagerSpider
         wxString _accessDir; //爬虫访问日志
         bool _bCache; //是否缓存数据
         std::vector<wxString> _regexRules; //正则表达式
-        std::vector<wxString> _failUrl; //访问失败的URL
+        std::vector<wxString> _failedUrl; //访问失败的URL
+
+        wxString _girl; //当前女孩的名字
+        std::unordered_set<wxString> _girls; //所有女孩的名字
+        std::unordered_set<CacheItem> _cache_items; //缓存数据
+
         //下面是统计数据
         uint32_t _totalImageCount; //下载的所有图片总数
         bool _allowRepeat; //是否需要图片去重

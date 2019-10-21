@@ -2,6 +2,7 @@
 #include <wx/regex.h>
 #include <wx/textfile.h>
 #include <wx/filefn.h>
+#include <exception>
 
 PagerSpider::PagerSpider(wxString url,
                          uint8_t depth,
@@ -15,7 +16,6 @@ PagerSpider::PagerSpider(wxString url,
 {
     _cacheDir = GetExeDir()+"cache/";
     _accessDir = GetExeDir();
-
 }
 
 PagerSpider::~PagerSpider()
@@ -48,6 +48,98 @@ bool PagerSpider::SaveCache(std::vector<wxString> data, uint8_t depth) //都是�
     file.Write();
     file.Close();
     return true;
+}
+
+bool PagerSpider::RestoreCache()
+{
+    wxTextFile file(GetCacheFile());
+    wxString line = file.GetNextLine();
+    do{
+        if(line[0] == "%"&&line[1]=="%"){
+            wxString global = line.Mid(2);
+            if(global == "girls"){
+
+            }else if(global == "dest_dir"){
+
+            }
+        }else if(line[0] =="+"&&line[1]=="+"){//
+            CacheItem item;
+            item.url = ParseItem(line);
+            line = file.GetNextLine();
+            wxString meta_name = ParseMetaLine(line,"::");
+            if(meta_name=="girl"){
+                item.girl = file.GetNextLine();
+            }
+            meta_name = ParseMetaLine(line,"::");
+            if(meta_name=="regex_rules"){
+                line=file.GetNextLine();
+                do{
+                    std::vector<wxString> parts = Split(line,",");
+                    RegexRule rule;
+                    rule.type = parts[0];
+                    rule.depth = parts[1];
+                    rule.rule = parts[2];
+                    item.regex_rules.push_back(rule);
+                }while(line[0]!=":"&&line[1]!=":")
+            }
+            meta_name = ParseMetaLine(line,"::");
+            if(meta_name == "cache_data"){
+                line = file.GetNextLine();
+                std::vector<wxString> parts = Split(line,"|");
+                std::vector<wxString>::const_iterator it;
+                for(it=parts.begin(); it!=parts.end(); ++it){
+                    std::vector<wxString> m = Split(*it,",");
+                    Chunk chunk;
+                    chunk.start = m[0];
+                    chunk.end = m[1];
+                    item.chunks.push_back(chunk);
+                }
+            }
+            _cache_items.insert(item);
+        }
+        line = file.GetNextLine();
+    }while(line!=""||line == file.Eof());
+    return true;
+}
+
+std::vector<wxString> PagerSpider::Split(wxString line,wxString seperator=",")
+{
+    size_t nLine = line.length();
+    std:vector<wxString> parts;
+    wxString part="";
+    for(size_t i=0; i<nLine; i++){
+        if(line[i] == seperator){
+            parts.push_back(part);
+            part = "";
+        }else{
+            part.Append(line[i]);
+        }
+    }
+    return parts;
+}
+
+wxString PagerSpider::ParseMetaLine(wxString line,wxString prefix)
+{
+    size_t nLine = line.length();
+    size_t nPrefix = prefix.length();
+    if(nLine < nPrefix){
+        throw new exception("unrecognized meta line");
+    }
+    if(line.Mid(0,nPrefix) == prefix){
+        return line.Mid(nPrefix).Trim();
+    }else{
+        throw new exception("meta line parse error.");
+    }
+}
+
+wxString PagerSpider::ParseItem(wxString line){
+    wxString ret;
+    for(uint32_t i=0; i<line.length(); i++){
+       if(line[i]!='+'&&line[i]!=' '){
+           ret.Append(line[i]);
+       }
+    }
+    return ret;
 }
 
 bool PagerSpider::IsCacheExists()

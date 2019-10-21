@@ -14,12 +14,14 @@ public:
 
 class Chunk
 {
+public:
     uint32_t start;
     uint32_t end;
 };
 
 class CacheItem
 {
+    public:
     wxString url;
     wxString girl;
     std::vector<RegexRule> regex_rules;

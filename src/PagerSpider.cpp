@@ -1,8 +1,11 @@
 #include "../include/PagerSpider.h"
+#include <exception>
+#include <wx/stdpaths.h>
+#include <wx/filename.h>
 #include <wx/regex.h>
 #include <wx/textfile.h>
 #include <wx/filefn.h>
-#include <exception>
+#include "../lib/Https.h"
 
 PagerSpider::PagerSpider(wxString url,
                          uint8_t depth,
@@ -25,10 +28,65 @@ PagerSpider::~PagerSpider()
 
 bool PagerSpider::Run()
 {
+    //bfs
+    std::vector<wxString> links;
+    std::vector<wxString> pages;
+    wxString response;
+    Https(_url,response,wxFONTENCODING_UTF8);
+    for(uint8_t i=0;i<_depth-1;i++){
+        wxString rule = GetRegexRule(RULE_LIST_DATA,i);
+        links = GetMatches(response,rule);
+        rule = GetRegexRule(RULE_PAGER,i);
+        pages = GetMatches(response,rule);
+    }
+    return true;
+}
+
+std::vector<wxString> PagerSpider::GetMatches(wxString& response,wxString& rule)
+{
+    std::vector<wxString> matches;
+    wxRegEx r(rule,wxRE_ADVANCED);
+    while(r.Matches(response)){
+
+    }
+    return matches;
+}
+
+//正则存取函数
+wxString PagerSpider::GetRegexRule(uint8_t type,uint8_t depth)
+{
+    std::vector<RegexRule>::const_iterator it;
+    //需要排序
+    for(it=_regexRules.begin(); it!=_regexRules.end(); ++it){
+        if((*it).depth == depth && (*it).type == type){
+            return (*it).rule;
+        }
+    }
+    return "";
+}
+
+void PagerSpider::SetRegexRule(wxString regexString,uint8_t type,uint8_t depth)
+{
+    RegexRule rule;
+    rule.depth = depth;
+    rule.type = type;
+    rule.rule = regexString;
+    _regexRules.push_back(rule);
+}
+
+bool PagerSpider::SaveCacheMeta()
+{
+    if(!IsCacheExists()){ //没有就新建
+
+    }else{ // 如果有的话，检查 _cache_meta
+        if(_cache_meta.url == ""){
+            RestoreCacheMeta(); //复原Meta对象
+        }
+    }
     return false;
 }
 
-bool PagerSpider::SaveCache(std::vector<wxString> data, uint8_t depth) //都是链接
+bool PagerSpider::SaveCacheData(std::vector<wxString> data, uint8_t depth) //都是链接
 {
     wxTextFile file(GetCacheFile());
     if(!file.Exists()){
@@ -50,19 +108,21 @@ bool PagerSpider::SaveCache(std::vector<wxString> data, uint8_t depth) //都是�
     return true;
 }
 
-bool PagerSpider::RestoreCache()
+
+
+bool PagerSpider::RestoreCacheMeta()
 {
-    wxTextFile file(GetCacheFile());
+    wxTextFile file(GetCacheMetaFile());
     wxString line = file.GetNextLine();
     do{
-        if(line[0] == "%"&&line[1]=="%"){
+        if(line[0] == '%'&&line[1]=='%'){
             wxString global = line.Mid(2);
             if(global == "girls"){
 
             }else if(global == "dest_dir"){
 
             }
-        }else if(line[0] =="+"&&line[1]=="+"){//
+        }else if(line[0] =='+'&&line[1]=='+'){//
             CacheItem item;
             item.url = ParseItem(line);
             line = file.GetNextLine();
@@ -74,13 +134,17 @@ bool PagerSpider::RestoreCache()
             if(meta_name=="regex_rules"){
                 line=file.GetNextLine();
                 do{
-                    std::vector<wxString> parts = Split(line,",");
+                    std::vector<wxString> parts = Split(line,wxT(","));
                     RegexRule rule;
-                    rule.type = parts[0];
-                    rule.depth = parts[1];
+                    long type;
+                    long depth;
+                    parts[0].ToLong(&type);
+                    parts[1].ToLong(&depth);
+                    rule.type = (uint8_t)type;
+                    rule.depth = (uint8_t)depth;
                     rule.rule = parts[2];
                     item.regex_rules.push_back(rule);
-                }while(line[0]!=":"&&line[1]!=":")
+                }while(line[0]!=':'&&line[1]!=':');
             }
             meta_name = ParseMetaLine(line,"::");
             if(meta_name == "cache_data"){
@@ -90,22 +154,25 @@ bool PagerSpider::RestoreCache()
                 for(it=parts.begin(); it!=parts.end(); ++it){
                     std::vector<wxString> m = Split(*it,",");
                     Chunk chunk;
-                    chunk.start = m[0];
-                    chunk.end = m[1];
+                    long start;long end;
+                    m[0].ToLong(&start);
+                    m[1].ToLong(&end);
+                    chunk.start = (uint32_t)start;
+                    chunk.end = (uint32_t)end;
                     item.chunks.push_back(chunk);
                 }
             }
-            _cache_items.insert(item);
+            _cache_items.push_back(item);
         }
         line = file.GetNextLine();
-    }while(line!=""||line == file.Eof());
+    }while(!file.Eof());
     return true;
 }
 
-std::vector<wxString> PagerSpider::Split(wxString line,wxString seperator=",")
+std::vector<wxString> PagerSpider::Split(wxString line,wxString seperator)
 {
     size_t nLine = line.length();
-    std:vector<wxString> parts;
+    std::vector<wxString> parts;
     wxString part="";
     for(size_t i=0; i<nLine; i++){
         if(line[i] == seperator){
@@ -123,12 +190,12 @@ wxString PagerSpider::ParseMetaLine(wxString line,wxString prefix)
     size_t nLine = line.length();
     size_t nPrefix = prefix.length();
     if(nLine < nPrefix){
-        throw new exception("unrecognized meta line");
+        throw "unrecognized meta line";
     }
     if(line.Mid(0,nPrefix) == prefix){
         return line.Mid(nPrefix).Trim();
     }else{
-        throw new exception("meta line parse error.");
+        throw "meta line parse error.";
     }
 }
 
@@ -151,6 +218,11 @@ bool PagerSpider::IsCacheExists()
 wxString PagerSpider::GetCacheFile()
 {
     return GetCacheDir()+"cache."+CACHE_SUFFIX;
+}
+
+wxString PagerSpider::GetCacheMetaFile()
+{
+    return GetCacheDir()+"cache.meta."+CACHE_SUFFIX;
 }
 
 wxString PagerSpider::GetCacheDir()
@@ -194,12 +266,6 @@ wxString PagerSpider::GetExeDir()
     return strExePath;
 }
 
-
-void PagerSpider::SetRegexRules(wxString regexString,uint8_t type,uint8_t depth)
-{
-    _regexRules.push_back(regexString);
-}
-
 std::vector<wxString> PagerSpider::GetCache(uint8_t depth) //获取缓存文件中保存的列表目录中的数据
 {
     std::vector<wxString> data;
@@ -210,9 +276,4 @@ std::vector<wxString> PagerSpider::GetCache(uint8_t depth) //获取缓存文件�
 uint32_t PagerSpider::GetTotalImageCount() //获取所有图片总数
 {
     return _totalImageCount;
-}
-
-bool PagerSpider::SaveAccessLog(wxString url) //爬虫访问的日志
-{
-    return false;
 }

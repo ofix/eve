@@ -2,14 +2,16 @@
 #define PAGERSPIDER_H
 #include <wx/string.h>
 #include <vector>
+#include <unordered_set>
 #include "CacheItem.h"
 
 #define CACHE_SUFFIX "eve"
+#define CACHE_META_SUFFIX "mta"
 #define ACCESS_SUFFIX "log"
 
-#define REGEX_URL_LIST 1
-#define REGEX_URL_PAGER 2
-#define REGEX_URL_IMAGE 3
+#define RULE_LIST_DATA 1
+#define RULE_PAGER 2
+#define RULE_IMAGE 3
 
 #define DEPTH_LIMIT 2
 
@@ -19,7 +21,9 @@ class PagerSpider
         PagerSpider(wxString url, uint8_t depth, wxString destDir, bool bCache=true);
         virtual ~PagerSpider();
         bool Run();
-        void SetRegexRules(wxString regexString,uint8_t type,uint8_t depth);
+        void SetRegexRule(wxString regexString,uint8_t type,uint8_t depth);
+        wxString GetRegexRule(uint8_t type,uint8_t depth);
+        std::vector<wxString> GetMatches(wxString& response,wxString& rule);
         uint32_t GetTotalImageCount(); //获取所有图片总数
 
         //日志相关函数
@@ -29,18 +33,19 @@ class PagerSpider
         wxString GetLogDir();
         //缓存相关日志
         bool IsCacheExists();
-        bool RestoreCache();//解析Cache里面的数据
         std::vector<wxString> GetCache(uint8_t depth); //获取缓存文件中保存的列表目录中的数据
-        bool SaveCache(std::vector<wxString> data, uint8_t depth); //都是链接
+        bool SaveCacheData(std::vector<wxString> data, uint8_t depth); //都是链接
+        bool SaveCacheMeta();
         bool ClearCache();//清空缓存
         wxString GetCacheFile();
+        wxString GetCacheMetaFile();
         wxString GetCacheDir();
         void SetCacheDir(wxString cacheDir); //设置缓存目录
-        wxString GetCacheDir();
         //Cache 解析相关
+        bool RestoreCacheMeta();//解析Cache里面的数据
         wxString ParseItem(wxString itemLine);
         wxString ParseMetaLine(wxString line,wxString prefix);
-        wxString Split(wxString line,wxString seperator=",");
+        std::vector<wxString> Split(wxString line,wxString seperator=",");
         wxString GetExeDir();
     private:
         wxString _url; //访问的URL
@@ -49,13 +54,14 @@ class PagerSpider
         wxString _cacheDir; //缓存文件的目录
         wxString _accessDir; //爬虫访问日志
         bool _bCache; //是否缓存数据
-        std::vector<wxString> _regexRules; //正则表达式
+        std::vector<RegexRule> _regexRules; //正则表达式
         std::vector<wxString> _failedUrl; //访问失败的URL
 
         wxString _girl; //当前女孩的名字
-        std::unordered_set<wxString> _girls; //所有女孩的名字
-        std::unordered_set<CacheItem> _cache_items; //缓存数据
+        std::vector<wxString> _girls; //所有女孩的名字
+        std::vector<CacheItem> _cache_items; //缓存数据
 
+        CacheItem _cache_meta; //当前缓存的meta数据
         //下面是统计数据
         uint32_t _totalImageCount; //下载的所有图片总数
         bool _allowRepeat; //是否需要图片去重

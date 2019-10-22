@@ -2,7 +2,7 @@
 <wxsmith>
 	<resource_extra>
 		<object root="1">
-			<handler function="OnInit" entry="EVT_INIT_DIALOG" />
+			<handler function="OnClose" entry="EVT_CLOSE" />
 		</object>
 		<object name="ID_TEXTCTRL_URL" class="wxTextCtrl" variable="TextCtrlUrl" member="yes" />
 		<object name="ID_STATICTEXT1" class="wxStaticText" variable="StaticText1" member="yes" />

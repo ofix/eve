@@ -48,6 +48,7 @@ class ConfigDialog: public wxDialog
 		//(*Handlers(ConfigDialog)
 		void OnButtonRunClick(wxCommandEvent& event);
 		void OnInit(wxInitDialogEvent& event);
+		void OnClose(wxCloseEvent& event);
 		//*)
 
 		DECLARE_EVENT_TABLE()

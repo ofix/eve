@@ -31,6 +31,7 @@ ConfigDialog::ConfigDialog(wxWindow* parent)
 	StaticText5 = (wxStaticText*)FindWindow(XRCID("ID_STATICTEXT5"));
 
 	Connect(XRCID("ID_BUTTON_RUN"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ConfigDialog::OnButtonRunClick);
+	Connect(wxID_ANY,wxEVT_CLOSE_WINDOW,(wxObjectEventFunction)&ConfigDialog::OnClose);
 	//*)
 
 }
@@ -59,6 +60,7 @@ void ConfigDialog::OnButtonRunClick(wxCommandEvent& event)
         m_pSpider->SetRegexRule(wxT("<img src=\"([^\"]+)\" alt=\"[^\"]+\" class=\"content_img\"[^>]*?>"),RULE_LIST_DATA,1);
     }
     wxMessageBox(wxT("爬虫设置完毕"));
+    std::cout<<"m_url = "<<m_url<<std::endl;
     std::cout<<"m_saveDir = "<<m_saveDir<<std::endl;
     std::cout<<"m_girl = "<<m_girl<<std::endl;
     std::cout<<"m_bDepthOne = "<<m_bDepthOne<<std::endl;
@@ -71,4 +73,10 @@ void ConfigDialog::OnInit(wxInitDialogEvent& event)
     //设置文件校验和数据传输
 	//TextCtrlUrl->SetValidator(wxGenericValidator(&m_url));
 	//TextCtrlGirl->SetValidator(wxGenericValidator(&m_girl));
+}
+
+
+void ConfigDialog::OnClose(wxCloseEvent& event)
+{
+    Destroy();
 }

@@ -135,6 +135,7 @@ CURLcode DownloadFile(wxString strUrl,wxString& strSavePath)
     }
     curl_slist_free_all(list); /* free the list again */
     curl_easy_cleanup(curl);
+    fclose(fp); //修正句柄不关闭，文件管理器占用图片，同时文件句柄数会被耗尽
     return ret;
 }
 

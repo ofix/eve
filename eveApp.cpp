@@ -16,14 +16,13 @@
 #endif //__BORLANDC__
 
 #include "eveApp.h"
-#include "eveMain.h"
+#include "ConfigDialog.h"
 
 IMPLEMENT_APP(eveApp);
 
 bool eveApp::OnInit()
 {
-    
-    eveDialog* dlg = new eveDialog(0L);
+    ConfigDialog* dlg = new ConfigDialog(0L);
     dlg->SetIcon(wxICON(aaaa)); // To Set App Icon
     dlg->Show();
     return true;

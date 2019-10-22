@@ -33,13 +33,18 @@ void PagerSpider::SetGirl(wxString girl){
     _girl = girl;
 }
 
-bool PagerSpider::Run()
+/*****************************************
+ *@brief 宽度优先遍历列表数据网页,解析出当前
+ *层级所有的网页再进入下一级层级进行遍历解析
+ *@param void
+ *@return bool
+ *****************************************/
+bool PagerSpider::BfsVisist()
 {
     std::vector<wxString> links;
     std::vector<wxString> next_links;
     links.push_back(_url);
     wxString host = GetHost(_url);
-    //bfs
     for(uint8_t i=0;i<=_depth;i++){
         for(size_t nLinks=0; nLinks <links.size(); nLinks++){
             wxString response;
@@ -74,6 +79,22 @@ bool PagerSpider::Run()
     std::cout<<"Download Images End...."<<std::endl;
     //下面是图片的链接
     return true;
+}
+
+/*****************************************
+ *@brief 深度优先遍历列表数据网页,解析出当前
+ *层级所有的网页再进入下一级层级进行遍历解析
+ *@param void
+ *@return bool
+ *****************************************/
+bool PagerSpider::DfsVisit()
+{
+    return false;
+}
+
+bool PagerSpider::Run()
+{
+    return BfsVisist();
 }
 
 bool PagerSpider::DownloadSingleImage(wxString& image_url,wxString savePath)
@@ -137,6 +158,7 @@ void  PagerSpider::console(wxString data,bool bUtf8)
 {
  wxCSConv gbkConv(wxFONTENCODING_CP936);
  std::string str_gbk(gbkConv.cWX2MB(data.wchar_str()));
+ std::cout<<str_gbk<<std::endl;
 }
 
 //正则存取函数

@@ -31,6 +31,9 @@ class PagerSpider
         bool DownloadSingleImage(wxString& image_url,wxString savePath);
         bool DownloadAllImages(std::vector<wxString>& images_url);
 
+        bool BfsVisist(); //广度优先遍历
+        bool DfsVisit();  //深度优先遍历
+
         //日志相关函数
         bool SaveLog(wxString url); //爬虫访问的日志
         wxString GetLogFile();

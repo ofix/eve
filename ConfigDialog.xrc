@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxDialog" name="ConfigDialog">
+		<title>Dialog</title>
+		<centered>1</centered>
+		<size>495,450</size>
+		<style>wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxCLOSE_BOX|wxDIALOG_NO_PARENT</style>
+		<object class="wxTextCtrl" name="ID_TEXTCTRL_URL">
+			<value>Text</value>
+			<pos>168,104</pos>
+			<size>248,32</size>
+			<font>
+				<size>16</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+			<exstyle>wxWS_EX_VALIDATE_RECURSIVELY</exstyle>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT1">
+			<label>访问网址</label>
+			<pos>64,104</pos>
+			<size>48,22</size>
+			<font>
+				<size>16</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT2">
+			<label>女孩名称</label>
+			<pos>64,152</pos>
+			<size>56,14</size>
+			<font>
+				<size>16</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxTextCtrl" name="ID_TEXTCTRL_GIRL">
+			<value>Text</value>
+			<pos>168,152</pos>
+			<size>248,30</size>
+			<font>
+				<size>16</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+			<exstyle>wxWS_EX_VALIDATE_RECURSIVELY</exstyle>
+		</object>
+		<object class="wxCheckBox" name="ID_CHECKBOX_DEPTHONE">
+			<label>一级</label>
+			<pos>168,248</pos>
+			<size>64,32</size>
+			<font>
+				<size>16</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT3">
+			<label>层级深度</label>
+			<pos>64,248</pos>
+			<font>
+				<size>16</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxCheckBox" name="ID_CHECKBOX_DEPTHTWO">
+			<label>二级</label>
+			<checked>1</checked>
+			<pos>248,248</pos>
+			<size>64,32</size>
+			<font>
+				<size>16</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT4">
+			<label>保存目录</label>
+			<pos>64,200</pos>
+			<font>
+				<size>16</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxFilePickerCtrl" name="ID_FILEPICKERCTRL_SAVEDIR">
+			<message></message>
+			<wildcard></wildcard>
+			<pos>168,200</pos>
+			<size>248,32</size>
+			<font>
+				<size>16</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxButton" name="ID_BUTTON_RUN">
+			<label>下载</label>
+			<pos>168,296</pos>
+			<size>120,40</size>
+			<font>
+				<size>16</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT5">
+			<label>美图录图片下载器V1.0</label>
+			<pos>128,24</pos>
+			<size>200,30</size>
+			<font>
+				<size>18</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+	</object>
+</resource>

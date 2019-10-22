@@ -17,7 +17,6 @@
 
 #include "GUIDialog.h"
 
-#include "include/PagerSpider.h"
 
 ///////////////////////////////////////////////////////////////////////////
 BEGIN_EVENT_TABLE( GUIDialog, wxDialog )
@@ -56,11 +55,5 @@ GUIDialog::GUIDialog( wxWindow* parent, int id, wxString title, wxPoint pos, wxS
     this->Layout();
     bSizer1->Fit( this );
 
-    //测试
-    PagerSpider spider("https://www.meitulu.com/search/%E7%9B%BC%E7%9B%BC%E5%B7%B2%E9%B8%A0",0,"",false);
-    spider.SetGirl(wxT("盼盼已鸠"));//不加wxT，输出的图片文件名会乱码
-    spider.SetRegexRule(wxT("<a href=\"([^\"]+)\"[^>]+><img[^<]+</a>"),RULE_LIST_DATA,0); //首页规则
-    spider.SetRegexRule(wxT("<a href=\"([^\"]+)\">\\d+</a> <a class=\"a1\" href=\"[^\"]+\">下一页"),RULE_PAGER,1);
-    spider.SetRegexRule(wxT("<img src=\"([^\"]+)\" alt=\"[^\"]+\" class=\"content_img\"[^>]*?>"),RULE_LIST_DATA,1); //第二次分页
-    spider.Run();
+
 }

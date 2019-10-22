@@ -30,6 +30,7 @@
 					<Add library="libwxbase31ud_net.a" />
 					<Add library="libwxmsw31ud_gl.a" />
 					<Add library="libwxbase31ud_xml.a" />
+					<Add library="libwxmsw31ud_xrc.a" />
 					<Add library="libwxmsw31ud_adv.a" />
 					<Add library="libwxmsw31ud_html.a" />
 					<Add library="libwxmsw31ud_core.a" />
@@ -79,6 +80,7 @@
 					<Add library="libwxregexu.a" />
 					<Add library="libwxexpat.a" />
 					<Add library="$(#curl)/lib/libcurl.dll.a" />
+					<Add library="libwxmsw31u_xrc.a" />
 					<Add directory="$(#wx)/gcc_dll_release_x64" />
 					<Add directory="$(#curl)/bin" />
 				</Linker>
@@ -104,9 +106,18 @@
 			<Add option="-m64" />
 			<Add option="-mthreads" />
 		</Linker>
+		<Unit filename=".gitignore" />
+		<Unit filename="ConfigDialog.cpp" />
+		<Unit filename="ConfigDialog.h" />
+		<Unit filename="ConfigDialog.xrc" />
 		<Unit filename="GUIDialog.cpp" />
 		<Unit filename="GUIDialog.h" />
+		<Unit filename="LICENSE" />
+		<Unit filename="README.md" />
 		<Unit filename="WxWizDialog.fbp" />
+		<Unit filename="eve.cbp" />
+		<Unit filename="eve.depend" />
+		<Unit filename="eve.layout" />
 		<Unit filename="eveApp.cpp" />
 		<Unit filename="eveApp.h" />
 		<Unit filename="eveMain.cpp" />
@@ -120,10 +131,16 @@
 		</Unit>
 		<Unit filename="src/CacheItem.cpp" />
 		<Unit filename="src/PagerSpider.cpp" />
+		<Unit filename="wxsmith/ConfigDialog.wxs" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<debugger />
+			<wxsmith version="1">
+				<resources>
+					<wxDialog wxs="wxsmith/ConfigDialog.wxs" src="ConfigDialog.cpp" hdr="ConfigDialog.h" xrc="ConfigDialog.xrc" fwddecl="0" i18n="1" name="ConfigDialog" language="CPP" />
+				</resources>
+			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

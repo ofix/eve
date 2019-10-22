@@ -22,20 +22,11 @@ PagerSpider::PagerSpider(wxString url,
     if(_destDir == ""){
         _destDir = GetExeDir()+"images/";
     }
-    Init();
 }
 
 PagerSpider::~PagerSpider()
 {
     //dtor
-}
-
-void PagerSpider::Init()
-{
-    SetRegexRule(wxT("<a href=\"([^\"]+)\"[^>]+><img[^<]+</a>"),RULE_LIST_DATA,0); //首页规则
-    SetRegexRule(wxT("<a href=\"([^\"]+)\">\\d+</a> <a class=\"a1\" href=\"[^\"]+\">下一页"),RULE_PAGER,1);
-    SetRegexRule(wxT("<img src=\"([^\"]+)\" alt=\"[^\"]+\" class=\"content_img\">"),RULE_LIST_DATA,1); //第二次分页
-    SetGirl(wxT("王莹"));//不加wxT，输出的图片文件名会乱码
 }
 
 void PagerSpider::SetGirl(wxString girl){
@@ -87,6 +78,7 @@ bool PagerSpider::Run()
 
 bool PagerSpider::DownloadSingleImage(wxString& image_url,wxString savePath)
 {
+   std::cout<<image_url<<std::endl;
    CURLcode ret = DownloadFile(image_url,savePath);
    if(ret == CURLE_OK){
         return true;

@@ -21,7 +21,6 @@ class PagerSpider
         PagerSpider(wxString url, uint8_t depth, wxString destDir, bool bCache=true);
         virtual ~PagerSpider();
         bool Run();
-        void Init();
         void SetGirl(wxString girl);
         void SetRegexRule(wxString regexString,uint8_t type,uint8_t depth);
         wxString GetRegexRule(uint8_t type,uint8_t depth);

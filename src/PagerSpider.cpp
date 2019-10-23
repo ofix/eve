@@ -19,6 +19,7 @@ PagerSpider::PagerSpider(wxString url,
     _cacheDir = GetExeDir()+"cache/";
     _accessDir = GetExeDir();
     _totalImageCount = 0;
+    _downloadedImageCount = 0;
     if(_destDir == ""){
         _destDir = GetExeDir()+"images/";
     }
@@ -67,16 +68,17 @@ bool PagerSpider::BfsVisist()
                     std::vector<wxString> tmp_links = GetMatches(response,rule);
                     next_links.insert(next_links.end(),tmp_links.begin(),tmp_links.end());
                 }
+                if(i==_depth){
+                    _totalImageCount  += next_links.size();
+                }
             }
         }
         links.clear();
         links.insert(links.end(),next_links.begin(),next_links.end());
         next_links.clear();
     }
-    std::cout<<"image size "<<(int)links.size()<<std::endl;
     _totalImageCount = links.size();
     DownloadAllImages(links);
-    std::cout<<"Download Images End...."<<std::endl;
     //下面是图片的链接
     return true;
 }
@@ -94,6 +96,8 @@ bool PagerSpider::DfsVisit()
 
 bool PagerSpider::Run()
 {
+    _totalImageCount = 0;
+    _downloadedImageCount = 0;
     return BfsVisist();
 }
 
@@ -111,6 +115,7 @@ bool PagerSpider::DownloadAllImages(std::vector<wxString>& images_url)
 {
     for(size_t i = 0; i< images_url.size(); ++i){
         DownloadSingleImage(images_url[i], _destDir+_girl+"_"+wxString::Format("%04d",(int)i)+".jpg");
+        _downloadedImageCount = i;
     }
     return true;
 }
@@ -376,7 +381,12 @@ std::vector<wxString> PagerSpider::GetCache(uint8_t depth) //获取缓存文件�
 }
 
 
-uint32_t PagerSpider::GetTotalImageCount() //获取所有图片总数
+size_t PagerSpider::GetTotalImageCount() //获取所有图片总数
 {
     return _totalImageCount;
+}
+
+size_t PagerSpider::GetDownloadImageCount()
+{
+    return _downloadedImageCount;
 }

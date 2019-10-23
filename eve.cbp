@@ -122,15 +122,21 @@
 		<Unit filename="eveApp.h" />
 		<Unit filename="eveMain.cpp" />
 		<Unit filename="eveMain.h" />
+		<Unit filename="include/BossThread.h" />
 		<Unit filename="include/CacheItem.h" />
 		<Unit filename="include/PagerSpider.h" />
+		<Unit filename="include/TaskItem.h" />
+		<Unit filename="include/WorkerThread.h" />
 		<Unit filename="lib/Https.cpp" />
 		<Unit filename="lib/Https.h" />
 		<Unit filename="resource.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
+		<Unit filename="src/BossThread.cpp" />
 		<Unit filename="src/CacheItem.cpp" />
 		<Unit filename="src/PagerSpider.cpp" />
+		<Unit filename="src/TaskItem.cpp" />
+		<Unit filename="src/WorkerThread.cpp" />
 		<Unit filename="wxsmith/ConfigDialog.wxs" />
 		<Extensions>
 			<code_completion />

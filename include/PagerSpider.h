@@ -26,7 +26,8 @@ class PagerSpider
         wxString GetRegexRule(uint8_t type,uint8_t depth);
         std::vector<wxString> GetMatches(wxString& response,wxString& rule);
         wxString GetMatch(wxString& response,wxString& rule);
-        uint32_t GetTotalImageCount(); //获取所有图片总数
+        size_t GetTotalImageCount(); //获取所有图片总数
+        size_t GetDownloadImageCount();
         std::vector<wxString> GetAllPages(wxString maxPageUrl,wxString host,size_t& nPages);
         bool DownloadSingleImage(wxString& image_url,wxString savePath);
         bool DownloadAllImages(std::vector<wxString>& images_url);
@@ -73,6 +74,7 @@ class PagerSpider
         CacheItem _cache_meta; //当前缓存的meta数据
         //下面是统计数据
         size_t _totalImageCount; //下载的所有图片总数
+        size_t _downloadedImageCount; //已经下载的图片总数
         bool _allowRepeat; //是否需要图片去重
         // 统计相关变量
         uint32_t _elapsed; //消逝的时间，单位秒

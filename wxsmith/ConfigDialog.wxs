@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
 	<resource_extra>
-		<object root="1">
-			<handler function="OnClose" entry="EVT_CLOSE" />
-		</object>
+		<object root="1" />
+		<object name="ID_STATICBOX2" class="wxStaticBox" variable="StaticBox2" member="yes" />
+		<object name="ID_STATICBOX1" class="wxStaticBox" variable="StaticBox1" member="yes" />
 		<object name="ID_TEXTCTRL_URL" class="wxTextCtrl" variable="TextCtrlUrl" member="yes" />
 		<object name="ID_STATICTEXT1" class="wxStaticText" variable="StaticText1" member="yes" />
 		<object name="ID_STATICTEXT2" class="wxStaticText" variable="StaticText2" member="yes" />
 		<object name="ID_TEXTCTRL_GIRL" class="wxTextCtrl" variable="TextCtrlGirl" member="yes" />
-		<object name="ID_CHECKBOX_DEPTHONE" class="wxCheckBox" variable="CheckBoxDepthOne" member="yes" />
 		<object name="ID_STATICTEXT3" class="wxStaticText" variable="StaticText3" member="yes" />
-		<object name="ID_CHECKBOX_DEPTHTWO" class="wxCheckBox" variable="CheckBoxDepthTwo" member="yes" />
 		<object name="ID_STATICTEXT4" class="wxStaticText" variable="StaticText4" member="yes" />
-		<object name="ID_FILEPICKERCTRL_SAVEDIR" class="wxFilePickerCtrl" variable="FileSaveDirCtrl" member="yes" />
 		<object name="ID_BUTTON_RUN" class="wxButton" variable="ButtonRun" member="yes">
 			<handler function="OnButtonRunClick" entry="EVT_BUTTON" />
 		</object>
 		<object name="ID_STATICTEXT5" class="wxStaticText" variable="StaticText5" member="yes" />
+		<object name="ID_BUTTON_RESET" class="wxButton" variable="ButtonReset" member="yes">
+			<handler function="OnButtonResetClick" entry="EVT_BUTTON" />
+		</object>
+		<object name="ID_STATICTEXT6" class="wxStaticText" variable="StaticText6" member="yes" />
+		<object name="ID_STATICTEXT7" class="wxStaticText" variable="StaticText7" member="yes" />
+		<object name="ID_STATICTEXT8" class="wxStaticText" variable="TextElapsedTime" member="yes" />
+		<object name="ID_STATICTEXT9" class="wxStaticText" variable="TextImageCount" member="yes" />
+		<object name="ID_COMBOBOX_DEPTH" class="wxComboBox" variable="ComboBoxDepth" member="yes" />
+		<object name="ID_DIRPICKERCTRL1" class="wxDirPickerCtrl" variable="FileSaveDirCtrl" member="yes" />
 	</resource_extra>
 </wxsmith>

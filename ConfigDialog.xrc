@@ -3,14 +3,48 @@
 	<object class="wxDialog" name="ConfigDialog">
 		<title>Dialog</title>
 		<centered>1</centered>
-		<size>495,450</size>
+		<size>524,479</size>
+		<font>
+			<size>12</size>
+			<style>normal</style>
+			<weight>normal</weight>
+			<underlined>0</underlined>
+			<family>swiss</family>
+			<face>微软雅黑</face>
+		</font>
 		<style>wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxCLOSE_BOX|wxDIALOG_NO_PARENT</style>
-		<object class="wxTextCtrl" name="ID_TEXTCTRL_URL">
-			<value>Text</value>
-			<pos>168,104</pos>
-			<size>248,32</size>
+		<object class="wxStaticBox" name="ID_STATICBOX2">
+			<label>下载统计</label>
+			<pos>56,72</pos>
+			<size>400,72</size>
 			<font>
-				<size>16</size>
+				<size>12</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxStaticBox" name="ID_STATICBOX1">
+			<label>下载设置</label>
+			<pos>56,160</pos>
+			<size>400,224</size>
+			<font>
+				<size>12</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxTextCtrl" name="ID_TEXTCTRL_URL">
+			<value>请输入</value>
+			<pos>176,200</pos>
+			<size>248,26</size>
+			<font>
+				<size>12</size>
 				<style>normal</style>
 				<weight>normal</weight>
 				<underlined>0</underlined>
@@ -21,10 +55,10 @@
 		</object>
 		<object class="wxStaticText" name="ID_STATICTEXT1">
 			<label>访问网址</label>
-			<pos>64,104</pos>
-			<size>48,22</size>
+			<pos>80,200</pos>
+			<size>72,21</size>
 			<font>
-				<size>16</size>
+				<size>12</size>
 				<style>normal</style>
 				<weight>normal</weight>
 				<underlined>0</underlined>
@@ -34,10 +68,10 @@
 		</object>
 		<object class="wxStaticText" name="ID_STATICTEXT2">
 			<label>女孩名称</label>
-			<pos>64,152</pos>
-			<size>56,14</size>
+			<pos>80,240</pos>
+			<size>72,21</size>
 			<font>
-				<size>16</size>
+				<size>12</size>
 				<style>normal</style>
 				<weight>normal</weight>
 				<underlined>0</underlined>
@@ -46,11 +80,11 @@
 			</font>
 		</object>
 		<object class="wxTextCtrl" name="ID_TEXTCTRL_GIRL">
-			<value>Text</value>
-			<pos>168,152</pos>
-			<size>248,30</size>
+			<value>请输入</value>
+			<pos>176,240</pos>
+			<size>248,26</size>
 			<font>
-				<size>16</size>
+				<size>12</size>
 				<style>normal</style>
 				<weight>normal</weight>
 				<underlined>0</underlined>
@@ -59,38 +93,11 @@
 			</font>
 			<exstyle>wxWS_EX_VALIDATE_RECURSIVELY</exstyle>
 		</object>
-		<object class="wxCheckBox" name="ID_CHECKBOX_DEPTHONE">
-			<label>一级</label>
-			<pos>168,248</pos>
-			<size>64,32</size>
-			<font>
-				<size>16</size>
-				<style>normal</style>
-				<weight>normal</weight>
-				<underlined>0</underlined>
-				<family>swiss</family>
-				<face>微软雅黑</face>
-			</font>
-		</object>
 		<object class="wxStaticText" name="ID_STATICTEXT3">
 			<label>层级深度</label>
-			<pos>64,248</pos>
+			<pos>80,320</pos>
 			<font>
-				<size>16</size>
-				<style>normal</style>
-				<weight>normal</weight>
-				<underlined>0</underlined>
-				<family>swiss</family>
-				<face>微软雅黑</face>
-			</font>
-		</object>
-		<object class="wxCheckBox" name="ID_CHECKBOX_DEPTHTWO">
-			<label>二级</label>
-			<checked>1</checked>
-			<pos>248,248</pos>
-			<size>64,32</size>
-			<font>
-				<size>16</size>
+				<size>12</size>
 				<style>normal</style>
 				<weight>normal</weight>
 				<underlined>0</underlined>
@@ -100,23 +107,10 @@
 		</object>
 		<object class="wxStaticText" name="ID_STATICTEXT4">
 			<label>保存目录</label>
-			<pos>64,200</pos>
+			<pos>80,280</pos>
+			<size>64,32</size>
 			<font>
-				<size>16</size>
-				<style>normal</style>
-				<weight>normal</weight>
-				<underlined>0</underlined>
-				<family>swiss</family>
-				<face>微软雅黑</face>
-			</font>
-		</object>
-		<object class="wxFilePickerCtrl" name="ID_FILEPICKERCTRL_SAVEDIR">
-			<message></message>
-			<wildcard></wildcard>
-			<pos>168,200</pos>
-			<size>248,32</size>
-			<font>
-				<size>16</size>
+				<size>12</size>
 				<style>normal</style>
 				<weight>normal</weight>
 				<underlined>0</underlined>
@@ -126,10 +120,10 @@
 		</object>
 		<object class="wxButton" name="ID_BUTTON_RUN">
 			<label>下载</label>
-			<pos>168,296</pos>
-			<size>120,40</size>
+			<pos>176,408</pos>
+			<size>104,32</size>
 			<font>
-				<size>16</size>
+				<size>12</size>
 				<style>normal</style>
 				<weight>normal</weight>
 				<underlined>0</underlined>
@@ -139,7 +133,7 @@
 		</object>
 		<object class="wxStaticText" name="ID_STATICTEXT5">
 			<label>美图录图片下载器V1.0</label>
-			<pos>128,24</pos>
+			<pos>120,24</pos>
 			<size>200,30</size>
 			<font>
 				<size>18</size>
@@ -149,6 +143,91 @@
 				<family>swiss</family>
 				<face>微软雅黑</face>
 			</font>
+		</object>
+		<object class="wxButton" name="ID_BUTTON_RESET">
+			<label>清空</label>
+			<pos>360,408</pos>
+			<size>96,32</size>
+			<font>
+				<size>12</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT6">
+			<label>耗时：</label>
+			<pos>108,104</pos>
+			<font>
+				<size>12</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT7">
+			<label>已下载/总数：</label>
+			<pos>228,104</pos>
+			<font>
+				<size>12</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT8">
+			<label></label>
+			<pos>160,104</pos>
+			<fg>wxSYS_COLOUR_HOTLIGHT</fg>
+			<font>
+				<size>12</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT9">
+			<label></label>
+			<pos>336,104</pos>
+			<fg>wxSYS_COLOUR_HIGHLIGHT</fg>
+			<font>
+				<size>12</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxComboBox" name="ID_COMBOBOX_DEPTH">
+			<content>
+				<item>层级1</item>
+				<item>层级2</item>
+			</content>
+			<selection>0</selection>
+			<pos>176,320</pos>
+			<font>
+				<size>12</size>
+				<style>normal</style>
+				<weight>normal</weight>
+				<underlined>0</underlined>
+				<family>swiss</family>
+				<face>微软雅黑</face>
+			</font>
+		</object>
+		<object class="wxDirPickerCtrl" name="ID_DIRPICKERCTRL1">
+			<message>选择保存目录</message>
+			<path>E:/big__tits</path>
+			<pos>176,280</pos>
+			<size>248,32</size>
 		</object>
 	</object>
 </resource>

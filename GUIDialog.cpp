@@ -33,7 +33,7 @@ GUIDialog::GUIDialog( wxWindow* parent, int id, wxString title, wxPoint pos, wxS
     bSizer1 = new wxBoxSizer( wxHORIZONTAL );
 
     m_staticText1 = new wxStaticText( this, wxID_ANY, wxT("Welcome To\nwxWidgets"), wxDefaultPosition, wxDefaultSize, 0 );
-    m_staticText1->SetFont( wxFont( 20, 74, 90, 90, false, wxT("Arial") ) );
+   // m_staticText1->SetFont( wxFont( 20, 74, 90, 90, false, wxT("Arial") ) );
 
     bSizer1->Add( m_staticText1, 0, wxALL|wxEXPAND, 5 );
 
